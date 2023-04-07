@@ -13,7 +13,7 @@
 # limitations under the License.
 import sys
 
-from .dependency_versions_table import deps
+from .dependency_versions_table import deps  #依赖的库包.
 from .utils.versions import require_version, require_version_core
 
 

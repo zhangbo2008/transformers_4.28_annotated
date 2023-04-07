@@ -15,15 +15,15 @@
 """
  Audio processing functions to extract feature from a raw audio. Should all be in numpy to support all frameworks, and
  remmove unecessary dependencies.
-"""
+"""#一个audio提取特征工具, 去除了不必要的依赖.方便使用.
 import math
 import warnings
 from typing import Optional
 
 import numpy as np
-from numpy.fft import fft
+from numpy.fft import fft #傅里叶变换.
 
-
+#两种转化方法, 默认是htk方法.
 def hertz_to_mel(freq: float, mel_scale: str = "htk") -> float:
     """Convert Hertz to Mels.
 
@@ -60,7 +60,7 @@ def hertz_to_mel(freq: float, mel_scale: str = "htk") -> float:
 
     return mels
 
-
+#上面的逆函数.
 def mel_to_hertz(mels: np.array, mel_scale: str = "htk") -> np.array:
     """Convert mel bin numbers to frequencies.
 

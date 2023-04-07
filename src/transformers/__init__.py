@@ -20,7 +20,7 @@
 
 __version__ = "4.28.0.dev0"
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING  #是否进行类型检查.
 
 # Check the dependencies satisfy the minimal versions required.
 from . import dependency_versions_check
@@ -47,7 +47,7 @@ logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 
 # Base objects, independent of any specific backend
-_import_structure = {
+_import_structure = {#所有的模型和函数.
     "audio_utils": [],
     "benchmark": [],
     "commands": [],
@@ -659,7 +659,7 @@ try:
     if not is_sentencepiece_available():
         raise OptionalDependencyNotAvailable()
 except OptionalDependencyNotAvailable:
-    from .utils import dummy_sentencepiece_objects
+    from .utils import dummy_sentencepiece_objects#如果缺库包.+
 
     _import_structure["utils.dummy_sentencepiece_objects"] = [
         name for name in dir(dummy_sentencepiece_objects) if not name.startswith("_")
