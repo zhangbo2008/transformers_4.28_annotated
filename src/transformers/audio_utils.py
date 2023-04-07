@@ -96,7 +96,7 @@ def mel_to_hertz(mels: np.array, mel_scale: str = "htk") -> np.array:
 
     return freqs
 
-
+#三角滤波器组
 def _create_triangular_filterbank(
     all_freqs: np.array,
     f_pts: np.array,
