@@ -33,7 +33,7 @@ def set_module_8bit_tensor_to_device(module, tensor_name, device, value=None):
     # Recurse if needed
     if "." in tensor_name:
         splits = tensor_name.split(".")
-        for split in splits[:-1]:
+        for split in splits[:-1]:#级联的tensorname,用attr逐级进入最后的module
             new_module = getattr(module, split)
             if new_module is None:
                 raise ValueError(f"{module} has no attribute {split}.")
@@ -43,8 +43,8 @@ def set_module_8bit_tensor_to_device(module, tensor_name, device, value=None):
     if tensor_name not in module._parameters and tensor_name not in module._buffers:
         raise ValueError(f"{module} does not have a parameter or a buffer named {tensor_name}.")
     is_buffer = tensor_name in module._buffers
-    old_value = getattr(module, tensor_name)
-
+    old_value = getattr(module, tensor_name)#提取他的数值.作为old
+#======是不是元数据, 不存真正的数据.Is True if the Tensor is a meta tensor, False otherwise. Meta tensors are like normal tensors, but they carry no data.
     if old_value.device == torch.device("meta") and device not in ["meta", torch.device("meta")] and value is None:
         raise ValueError(f"{tensor_name} is on the meta device, we need a `value` to put in on {device}.")
 
@@ -56,11 +56,11 @@ def set_module_8bit_tensor_to_device(module, tensor_name, device, value=None):
     if has_fp16_weights is not None:
         param = module._parameters[tensor_name]
         if param.device.type != "cuda":
-            if value is None:
+            if value is None:#如果不指定数值.那么就是old_value来提供给new_value
                 new_value = old_value.to(device)
-            elif isinstance(value, torch.Tensor):
+            elif isinstance(value, torch.Tensor):#如果value存在,那么就用value来提供数据.
                 new_value = value.to("cpu")
-                if value.dtype == torch.int8:
+                if value.dtype == torch.int8:#因为制定了fp16,如果value是8就会报错. 说明这2钟不共存.用了f16就不能用int8.
                     raise ValueError(
                         "You cannot load weights that are saved in int8 using `load_in_8bit=True`, make sure you are",
                         " using `load_in_8bit=True` on float32/float16/bfloat16 weights.",
@@ -68,8 +68,8 @@ def set_module_8bit_tensor_to_device(module, tensor_name, device, value=None):
             else:
                 new_value = torch.tensor(value, device="cpu")
             new_value = bnb.nn.Int8Params(new_value, requires_grad=False, has_fp16_weights=has_fp16_weights).to(device)
-            module._parameters[tensor_name] = new_value
-    else:
+            module._parameters[tensor_name] = new_value# int8的数值再写回去.
+    else:#如果不用f16
         if value is None:
             new_value = old_value.to(device)
         elif isinstance(value, torch.Tensor):
@@ -85,7 +85,7 @@ def set_module_8bit_tensor_to_device(module, tensor_name, device, value=None):
 
 
 def replace_8bit_linear(model, threshold=6.0, modules_to_not_convert=None, current_key_name=None):
-    """
+    """#把线性层都替换为8bit模式.
     A helper function to replace all `torch.nn.Linear` modules by `bnb.nn.Linear8bit` modules from the `bitsandbytes`
     library. This will enable running your models using mixed int8 precision as described by the paper `GPT3.int8():
     8-bit Matrix Multiplication for Transformers at Scale`. Make sure `bitsandbytes` compiled with the correct CUDA
@@ -119,14 +119,14 @@ def replace_8bit_linear(model, threshold=6.0, modules_to_not_convert=None, curre
             current_key_name = []
         current_key_name.append(name)
 
-        if len(list(module.children())) > 0:
+        if len(list(module.children())) > 0:#迭代他的children
             replace_8bit_linear(module, threshold, modules_to_not_convert, current_key_name)
 
         if isinstance(module, nn.Linear) and name not in modules_to_not_convert:
             # Check if the current key is not in the `modules_to_not_convert`
             if not any(key in ".".join(current_key_name) for key in modules_to_not_convert):
                 with init_empty_weights():
-                    model._modules[name] = bnb.nn.Linear8bitLt(
+                    model._modules[name] = bnb.nn.Linear8bitLt(#使用库包来切换8bit
                         module.in_features,
                         module.out_features,
                         module.bias is not None,
@@ -134,7 +134,7 @@ def replace_8bit_linear(model, threshold=6.0, modules_to_not_convert=None, curre
                         threshold=threshold,
                     )
                     # Force requires grad to False to avoid unexpected errors
-                    model._modules[name].requires_grad_(False)
+                    model._modules[name].requires_grad_(False)#切换8bit之后就不能训练了.
         # Remove the last key for recursion
         current_key_name.pop(-1)
     return model

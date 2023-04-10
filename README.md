@@ -2,6 +2,7 @@
     读这个版本的transformers库包. 之前读过3.x版本跟目前这个差别很大.紧跟形势要重新读一下.
     从这个项目的src/transformers这个文件夹看,其他部分都不用看.
         先看__init__.py
+        在看里面的utils
 
 
 

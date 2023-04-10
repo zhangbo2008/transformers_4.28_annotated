@@ -184,7 +184,7 @@ MODEL_CARD_NAME = "modelcard.json"
 
 SENTENCEPIECE_UNDERLINE = "▁"
 SPIECE_UNDERLINE = SENTENCEPIECE_UNDERLINE  # Kept for backward compatibility
-
+# 3个dummy输入作为测试数据.
 MULTIPLE_CHOICE_DUMMY_INPUTS = [
     [[0, 1, 0, 1], [1, 0, 0, 1]]
 ] * 2  # Needs to have 0s and 1s only since XLM uses it for langs too.

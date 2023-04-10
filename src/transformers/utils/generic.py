@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Generic utilities
+Generic utilities #一些通用的辅助函数.
 """
 
 import inspect
@@ -216,9 +216,9 @@ def to_numpy(obj):
     else:
         return obj
 
-
+# python dataclasses库包的使用方法: https://blog.csdn.net/jay_yxm/article/details/107977913
 class ModelOutput(OrderedDict):
-    """
+    """ #所有模型输出的父类.
     Base class for all model outputs as dataclass. Has a `__getitem__` that allows indexing by integer or slice (like a
     tuple) or strings (like a dictionary) that will ignore the `None` attributes. Otherwise behaves like a regular
     python dictionary.
@@ -230,7 +230,7 @@ class ModelOutput(OrderedDict):
 
     </Tip>
     """
-
+#使用 post_init 方法已经能够处理后期初始化操作。
     def __post_init__(self):
         class_fields = fields(self)
 
