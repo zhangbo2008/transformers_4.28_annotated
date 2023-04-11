@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
 
-class BaseTransformersCLICommand(ABC):
+class BaseTransformersCLICommand(ABC):#弄一个虚函数.
     @staticmethod
     @abstractmethod
     def register_subcommand(parser: ArgumentParser):

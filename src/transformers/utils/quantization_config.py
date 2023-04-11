@@ -17,7 +17,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass  #量化配置. 让模型轻量化.
 class BitsAndBytesConfig:
     """
     This is a wrapper class about all possible attributes and features that you can play with a model that has been
@@ -65,7 +65,7 @@ class BitsAndBytesConfig:
 
         self.post_init()
 
-    def post_init(self):
+    def post_init(self):#init之后自动触发这个函数.
         r"""
         Safety checker that arguments are correct - also replaces some NoneType arguments with their default values.
         """
@@ -92,7 +92,7 @@ class BitsAndBytesConfig:
 
         Returns:
             [`PretrainedConfig`]: The configuration object instantiated from those parameters.
-        """
+        """#==========把kwargs和config_dict拼接在一起.作为返回.重复的按照kwargs为准.
         config = cls(**config_dict)
 
         to_remove = []

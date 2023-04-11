@@ -32,8 +32,8 @@ from ..processors.utils import InputFeatures
 logger = logging.get_logger(__name__)
 
 
-@dataclass
-class GlueDataTrainingArguments:
+@dataclass   
+class GlueDataTrainingArguments:  # glue数据集的训练参数.
     """
     Arguments pertaining to what data we are going to input our model for training and eval.
 
@@ -118,7 +118,7 @@ class GlueDataset(Dataset):
 
         # Make sure only the first process in distributed training processes the dataset,
         # and the others will use the cache.
-        lock_path = cached_features_file + ".lock"
+        lock_path = cached_features_file + ".lock" #读取数据文件
         with FileLock(lock_path):
             if os.path.exists(cached_features_file) and not args.overwrite_cache:
                 start = time.time()

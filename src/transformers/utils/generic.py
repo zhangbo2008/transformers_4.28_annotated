@@ -263,7 +263,7 @@ class ModelOutput(OrderedDict):
                         or not len(element) == 2
                         or not isinstance(element[0], str)
                     ):
-                        if idx == 0:
+                        if idx == 0:#把内部的数据放到self里面.
                             # If we do not have an iterator of key/values, set it as attribute
                             self[class_fields[0].name] = first_field
                         else:
@@ -321,7 +321,7 @@ class ModelOutput(OrderedDict):
         return tuple(self[k] for k in self.keys())
 
 
-class ExplicitEnum(str, Enum):
+class ExplicitEnum(str, Enum):#枚举类.
     """
     Enum with more explicit error message for missing values.
     """
@@ -333,7 +333,7 @@ class ExplicitEnum(str, Enum):
         )
 
 
-class PaddingStrategy(ExplicitEnum):
+class PaddingStrategy(ExplicitEnum):#三种策略.
     """
     Possible values for the `padding` argument in [`PreTrainedTokenizerBase.__call__`]. Useful for tab-completion in an
     IDE.
@@ -355,15 +355,15 @@ class TensorType(ExplicitEnum):
     NUMPY = "np"
     JAX = "jax"
 
-
-class ContextManagers:
+#https://blog.csdn.net/qq_29654325/article/details/119816610  contextmanager的使用.
+class ContextManagers:#把一堆上下文组织起来.
     """
     Wrapper for `contextlib.ExitStack` which enters a collection of context managers. Adaptation of `ContextManagers`
     in the `fastcore` library.
     """
 
     def __init__(self, context_managers: List[ContextManager]):
-        self.context_managers = context_managers
+        self.context_managers = context_managers#所有的上下文.
         self.stack = ExitStack()
 
     def __enter__(self):
@@ -380,8 +380,8 @@ def can_return_loss(model_class):
 
     Args:
         model_class (`type`): The class of the model.
-    """
-    base_classes = str(inspect.getmro(model_class))
+    """#inspect库包:https://zhuanlan.zhihu.com/p/290018252
+    base_classes = str(inspect.getmro(model_class))#mro获取父类.就是方法解析顺序(Method Resolution Order)
 
     if "keras.engine.training.Model" in base_classes:
         signature = inspect.signature(model_class.call)  # TensorFlow models
@@ -419,7 +419,7 @@ def find_labels(model_class):
     else:
         return [p for p in signature.parameters if "label" in p]
 
-
+#把字典展评. 嵌套字典用.来表示.
 def flatten_dict(d: MutableMapping, parent_key: str = "", delimiter: str = "."):
     """Flatten a nested dict into a single level dict."""
 
@@ -434,10 +434,10 @@ def flatten_dict(d: MutableMapping, parent_key: str = "", delimiter: str = "."):
     return dict(_flatten_dict(d, parent_key, delimiter))
 
 
-@contextmanager
+@contextmanager #让下面的函数可以使用with语句.
 def working_or_temp_dir(working_dir, use_temp_dir: bool = False):
     if use_temp_dir:
-        with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory() as tmp_dir:#tempfile库包的内容,会临时创建,使用玩就会删除.临时文件这个叫.
             yield tmp_dir
     else:
         yield working_dir

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
+"""  hub是中心的意思, 这里面是负责下载文件的地方.
 Hub utilities: utilities related to download and cache models
 """
 import json
@@ -71,7 +71,7 @@ def is_offline_mode():
     return _is_offline_mode
 
 
-torch_cache_home = os.getenv("TORCH_HOME", os.path.join(os.getenv("XDG_CACHE_HOME", "~/.cache"), "torch"))
+torch_cache_home = os.getenv("TORCH_HOME", os.path.join(os.getenv("XDG_CACHE_HOME", "~/.cache"), "torch")) #获取环境变量, 或者使用后面那个默认值. 默认在~/.cache
 old_default_cache_path = os.path.join(torch_cache_home, "transformers")
 # New default cache, shared with the Datasets library
 hf_cache_home = os.path.expanduser(
